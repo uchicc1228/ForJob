@@ -44,6 +44,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -67,16 +70,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Backstage\AdminPage.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\GetAllList.ashx.cs">
+      <DependentUpon>GetAllList.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="API\GetList.ashx.cs">
+      <DependentUpon>GetList.ashx</DependentUpon>
+    </Compile>
+    <Compile Include="Backstage\AdminPage.aspx.cs">
+      <DependentUpon>AdminPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Backstage\AdminPage.aspx.designer.cs">
+      <DependentUpon>AdminPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Managers\ListManager.cs" />
+    <Compile Include="Models\ListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="API\GetList.ashx" />
+    <Content Include="API\GetAllList.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -87,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="UserControls\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
