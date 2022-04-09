@@ -18,33 +18,37 @@ namespace ForJob.API
             if (string.Compare("GET", context.Request.HttpMethod, true) == 0 )
             {
                 if(!string.IsNullOrEmpty(context.Request.QueryString["Title"]))
-                {
+                {   
+
+                    //有標題ㄉ查詢
                     string time_start = context.Request.QueryString["time_start"];
                     string time_end = context.Request.QueryString["time_end"];
                     string title = context.Request.QueryString["Title"];
 
-
                     var model = _mgr.FindList(title, time_start, time_end);
-                    string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(model);
-
+                    var listTop2 = model.Take(5).ToList();
+                    string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(listTop2);
                     context.Response.ContentType = "application/json";
                     context.Response.Write(jsonText);
                     return;
+
+
                 }
-                else 
-                {
+                else
+                {   
+                    //無標題的查詢
                     string time_start = context.Request.QueryString["time_start"];
                     string time_end = context.Request.QueryString["time_end"];
-                    
-                    var model = _mgr.FindListTime(time_start , time_end);
-                    string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(model);
+                    var model = _mgr.FindListTime(time_start, time_end);
+                    var listTop2 = model.Take(5).ToList();
+                    string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(listTop2);
                     context.Response.ContentType = "application/json";
                     context.Response.Write(jsonText);
                     return;
                 }
 
-                
-                
+
+
             }
             
             //列出所有

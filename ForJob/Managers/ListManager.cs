@@ -62,10 +62,7 @@ namespace ForJob.Managers
             }
         }
 
-
-
-        //列出搜尋結果
-        public List<ListModel> FindList(string title,string time_start , string time_end)
+        public List<ListModel> FindList(string title, string time_start, string time_end)
         {
 
             List<ListModel> list = new List<ListModel>();
@@ -143,9 +140,9 @@ namespace ForJob.Managers
             //        From Questionary
             //        where [QStartTime] >= @QStartTime ";
             //       commandText += commandText2;
-               
+
             //}
-           
+
 
             try
             {
@@ -153,7 +150,7 @@ namespace ForJob.Managers
                 {
                     using (SqlCommand command = new SqlCommand(commandText, conn))
                     {
-                        
+
                         command.Parameters.AddWithValue("@QStartTime", time_start);
                         command.Parameters.AddWithValue("@QEndTime", time_end);
 
@@ -191,6 +188,145 @@ namespace ForJob.Managers
             }
         }
 
+        //分頁
+        public List<ListModel> Pafination(string time_start, string time_end, int pageSize, int pageIndex)
+        {
+            List<ListModel> list = new List<ListModel>();
+            int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
+            if (skip < 0)
+                skip = 0;
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =    
+                $@"SELECT TOP  {(pageSize)}  *
+                    FROM Questionary 
+                     WHERE    QNumber not IN 
+                          (
+                             SELECT TOP {(skip)}  QNumber
+                             FROM Questionary     		    
+	                   		 WHERE QNumber IN 
+	                   		 ( SELECT QNumber FROM Questionary
+	                   		    where [QStartTime] >= @QStartTime
+                                and [QEndTime] <=  @QEndTime )
+	                   									           ORDER BY QNumber DESC)	  		   
+                                                                                                  
+	                   	     and  [QStartTime] >= @QStartTime
+                             and [QEndTime] <=    @QEndTime	
+	                   		 ORDER BY QNumber DESC;   ";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QStartTime", time_start);
+                        command.Parameters.AddWithValue("@QEndTime", time_end);
+
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        List<ListModel> retList = new List<ListModel>();    // 將資料庫內容轉為自定義型別清單
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Number = (int)reader["QNumber"],
+                                Title = reader["QTitle"] as string,
+                                StartTime = (DateTime)reader["QStartTime"],
+                                EndTime = reader["QEndTime"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                Content = reader["QContent"] as string,
+                            };
+                            model.StartTime_string = model.StartTime.ToString("yyyy/MM/dd");
+                            if (string.IsNullOrEmpty(model.EndTime))
+                            {
+                                model.EndTime = "-";
+                            }
+                            list.Add(model);
+
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+        }
+
+
+        public List<ListModel> PafinationHasTitle(string title , string time_start, string time_end, int pageSize, int pageIndex)
+        {
+            List<ListModel> list = new List<ListModel>();
+            int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
+            if (skip < 0)
+                skip = 0;
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                $@"SELECT TOP  {(pageSize)}  *
+                    FROM Questionary 
+                     WHERE    QNumber not IN 
+                          (
+                             SELECT TOP {(skip)}  QNumber
+                             FROM Questionary     		    
+	                   		 WHERE QNumber IN 
+	                   		 ( SELECT QNumber FROM Questionary
+	                   		    where  QTitle like  '%' + @Qtitle + '%' and 
+                                [QStartTime] >= @QStartTime
+                                and [QEndTime] <=  @QEndTime )
+	                   									           ORDER BY QNumber DESC)	 
+                             and  [QTitle] like   '%' + @Qtitle +'%'                                                                   
+	                   	     and  [QStartTime] >= @QStartTime
+                             and [QEndTime] <=    @QEndTime	
+	                   		 ORDER BY QNumber DESC;   ";
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QStartTime", time_start);
+                        command.Parameters.AddWithValue("@QEndTime", time_end);
+                        command.Parameters.AddWithValue("@Qtitle", title);
+
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        List<ListModel> retList = new List<ListModel>();    // 將資料庫內容轉為自定義型別清單
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Number = (int)reader["QNumber"],
+                                Title = reader["QTitle"] as string,
+                                StartTime = (DateTime)reader["QStartTime"],
+                                EndTime = reader["QEndTime"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                Content = reader["QContent"] as string,
+                            };
+                            model.StartTime_string = model.StartTime.ToString("yyyy/MM/dd");
+                            if (string.IsNullOrEmpty(model.EndTime))
+                            {
+                                model.EndTime = "-";
+                            }
+                            list.Add(model);
+
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw (ex);
+            }
+
+        }
 
     }
 }

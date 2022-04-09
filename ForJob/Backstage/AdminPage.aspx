@@ -11,7 +11,7 @@
         crossorigin="“anonymous" />
     <script src="../JavaScript/bootstrap/bootstrap.js"></script>
     <script src="../JavaScript/jquery/jquery.js"></script>
-
+   
     <style>
         div {
             border: 1px solid black;
@@ -44,6 +44,7 @@
             height: 100%;
             left: 18%;
             position: relative;
+
         }
 
 
@@ -58,10 +59,22 @@
 
         .pagination {
             position: relative;
-            float: left;
+            
             padding: 0px;
             margin: 0px;
         }
+
+        .divleft{
+            width:100px;
+            float:left;
+        }
+        
+        .page-link{
+            width:100px;
+            text-align:center;
+            float:left;
+        }
+        
     </style>
 
 </head>
@@ -78,26 +91,30 @@
                 <input type="date" runat="server" id="txtCalender_start" />
                 <input type="date" runat="server" id="txtCalender_end" />
                 <input type="button" id="btnsearch" value="搜尋" />
+                <literal id="ltl1"></literal>
+            </div>
+            <div class="divleft">
+                wee
             </div>
             <div class="divlist">
                 <div class="list-group" id="summarizing">
                 </div>
-                <div>
-                    <nav aria-label="Page navigation example" clcass="pagination">
-                        <ul class="pagination">
-                            <li class="page-item"><a class="page-link" href="#" style="color: black; background-color: darkgrey;">Previous</a></li>
-                            <li class="page-item"><a class="page-link" href="#" style="color: black; background-color: darkgrey;">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#" style="color: black; background-color: darkgrey;">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#" style="color: black; background-color: darkgrey;">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#" style="color: black; background-color: darkgrey;">Next</a></li>
-                        </ul>
-                    </nav>
-                </div>
-
+            </div>
+            <div id="Pagination">
+       
+                        <label class="page-link" id="a"  style="color: black; background-color: darkgrey;">1</label>
+                        <label class="page-link" id="b"  style="color: black; background-color: darkgrey;">2</label>
+                        <label class="page-link" id="c"  style="color: black; background-color: darkgrey;">3</label>
+                        <label class="page-link" id="d"  style="color: black; background-color: darkgrey;">4</label>
+                        <label class="page-link" id="e"  style="color: black; background-color: darkgrey;">5</label>
+               
+           
             </div>
         </div>
     </form>
+    <script src="../JavaScriptCode/Page.js"></script>
     <script>
+       
         $(document).ready(function () {
             //列出所有
             function BuildTable() {
@@ -105,6 +122,9 @@
                     url: "/API/GetALLList.ashx",
                     method: "GET",
                     dataType: "JSON",
+                    data: {
+                        "ALL": 123
+                    },
                     success: function (objDataList) {
                         console.log(objDataList);
 
@@ -151,7 +171,7 @@
             }
             BuildTable()
 
-            //搜尋
+            //搜尋(標題&日期)
             $("#btnsearch").click(function () {
                 var title = $("input[placeholder='請輸入問卷標題'").val().trim();
                 var time_start = $("#txtCalender_start").val();
@@ -159,9 +179,9 @@
                 var ID = $("#hfID").val();
                 if (title == "") {
                     alert("您未輸入任何標題文字，所以幫您選出日期內所有問卷");
-                   /* return false;*/
+                    /* return false;*/
                 }
-    
+
                 $.ajax({
                     url: "/API/GetList.ashx",
                     method: "GET",
@@ -219,66 +239,22 @@
                 });
             });
 
-            //日期搜尋
-            //$("#btnsearch").click(function () {
-            //    var time = $("input[placeholder='請輸入問卷標題'").val();
-            //    var ID = $("#hfID").val();
-            //    $.ajax({
-            //        url: "/API/GetList.ashx",
-            //        method: "GET",
-            //        data: {
-
-            //            "Title": title
-            //        },
-            //        dataType: "JSON",
-            //        success: function (objDataList) {
-
-            //            console.log(objDataList);
-
-            //            var rowsText = `<thead>
-            //                    <table class="table table-dark table-striped">
-            //            <thead>
-            //                <tr>
-            //                    <th scope="col"></th>
-            //                    <th scope="col">#</th>
-            //                    <th scope="col">問卷</th>
-            //                    <th scope="col">狀態</th>
-            //                    <th scope="col">開啟時間</th>
-            //                    <th scope="col">結束時間</th>
-            //                    <th scope="col">觀看統計</th>
-            //                </tr>
-            //            </thead>`;
-            //            for (var item of objDataList) {
-            //                rowsText +=
-            //                    `  
-            //            <tbody>
-            //                <tr>
-            //                    <td><input type="radio" id="selectBtn" name="selectBtn" value="selectBtn" /></td>
-            //                    <td>${item.Number}</td>
-            //                    <td> <a href="https://www.google.com/?hl=zh_tw">${item.Title}</a> </td>
-            //                    <td> ${item.StatusList} </td>
-            //                    <td> ${item.StartTime_string} </td>
-            //                    <td> ${item.EndTime} </td>
-            //                    <td><a href="https://www.google.com/?hl=zh_tw">google</a></td>
-            //                    <td><input type="hidden" class="hfID" name="hfID" value="${item.ID}"></td>
-
-            //                </tr>
-            //            </tbody>
-
-            //            `;
-            //            }
-            //            $("#summarizing").empty();
-            //            $("#summarizing").append("<table>" + rowsText + "</table>");
-            //        },
-            //        error: function (msg) {
-            //            console.log(msg);
-            //            alert("通訊失敗，請聯絡管理員。");
-            //        }
-            //    });
-            //});
+         
 
 
-            //跳頁
+
+
+
+
+
+
+
+
+
+
+
+
+          
 
 
 

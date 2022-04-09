@@ -16,11 +16,12 @@ namespace ForJob.API
         {
             ListManager _mgr = new ListManager();
             //列出所有
-            if (string.Compare("GET", context.Request.HttpMethod, true) == 0)
+            if (string.Compare("GET", context.Request.HttpMethod, true) == 0 && !string.IsNullOrEmpty(context.Request.QueryString["ALL"]))
             {
+                var qq = context.Request.QueryString["ALL"];
                 var list = _mgr.GetAllList();
-                string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(list);
-
+                var listTop10 = list.Take(5).ToList();
+                string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(listTop10);
                 context.Response.ContentType = "application/json";
                 context.Response.Write(jsonText);
                 return;

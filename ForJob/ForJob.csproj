@@ -81,6 +81,9 @@
     <Compile Include="API\GetList.ashx.cs">
       <DependentUpon>GetList.ashx</DependentUpon>
     </Compile>
+    <Compile Include="API\GetPagination.ashx.cs">
+      <DependentUpon>GetPagination.ashx</DependentUpon>
+    </Compile>
     <Compile Include="Backstage\AdminPage.aspx.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -92,6 +95,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\ConfigHelper.cs" />
+    <Compile Include="Helpers\ListHelper.cs" />
     <Compile Include="Managers\ListManager.cs" />
     <Compile Include="Models\ListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,6 +103,7 @@
   <ItemGroup>
     <Content Include="API\GetList.ashx" />
     <Content Include="API\GetAllList.ashx" />
+    <Content Include="API\GetPagination.ashx" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -109,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="JavaScriptCode\" />
     <Folder Include="UserControls\" />
   </ItemGroup>
   <PropertyGroup>

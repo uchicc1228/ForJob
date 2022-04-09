@@ -13,8 +13,8 @@ namespace ForJob.Backstage
         {
             //想要做Time_end +1  
             string Time = DateTime.Now.ToString("yyyy-MM-dd");          
-            this.txtCalender_start.Value = Time;
-            this.txtCalender_end.Value = Time;
+            this.txtCalender_start.Value = "2018-01-01";
+            this.txtCalender_end.Value = "2022-12-31";
 
         }
 
