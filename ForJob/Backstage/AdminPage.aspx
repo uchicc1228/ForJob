@@ -92,10 +92,14 @@
                 <input type="date" runat="server" id="txtCalender_end" />
                 <input type="button" id="btnsearch" value="搜尋" />
                 <literal id="ltl1"></literal>
+                
             </div>
             <div class="divleft">
-                wee
+                    <asp:Button runat="server" ID="btnAddList"  OnClick="btnAddList_Click" Text="新增問卷" />
+                    <asp:Button runat="server" ID="btnDelete" OnClick="btnDelete_Click" Text="刪除問卷" />
+                    
             </div>
+       
             <div class="divlist">
                 <div class="list-group" id="summarizing">
                 </div>
@@ -113,8 +117,7 @@
         </div>
     </form>
     <script src="../JavaScriptCode/Page.js"></script>
-    <script>
-       
+    <script>  
         $(document).ready(function () {
             //列出所有
             function BuildTable() {
@@ -146,7 +149,7 @@
                                 `  
                         <tbody>
                             <tr>
-                                <td><input type="radio" id="selectBtn" name="selectBtn" value="selectBtn" /></td>
+                                <td><input type="checkbox"  name="selectBtn" value="${item.ID}" /></td>
                                 <td>${item.Number}</td>
                                 <td> <a href="https://www.google.com/?hl=zh_tw">${item.Title}</a> </td>
                                 <td> ${item.StatusList} </td>
@@ -215,7 +218,7 @@
                                 `  
                         <tbody>
                             <tr>
-                                <td><input type="radio" id="selectBtn" name="selectBtn" value="selectBtn" /></td>
+                                <td><input type="checkbox" id="selectBtn" name="selectBtn" value="selectBtn" /></td>
                                 <td>${item.Number}</td>
                                 <td> <a href="https://www.google.com/?hl=zh_tw">${item.Title}</a> </td>
                                 <td> ${item.StatusList} </td>
@@ -240,9 +243,18 @@
             });
 
          
-
-
-
+       
+  
+            $(function () {
+                $('input[name=selectBtn]').on('change', function () {
+                    var vals = [];
+                    $('input[name=selectBtn]:checked').each(function (i) {
+                        vals.push($(this).val());
+                        console.log('wee');
+                    });
+                    console.log(vals);
+                });
+            });
 
 
 

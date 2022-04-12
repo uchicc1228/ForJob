@@ -20,7 +20,7 @@ namespace ForJob.API
             {
                 var qq = context.Request.QueryString["ALL"];
                 var list = _mgr.GetAllList();
-                var listTop10 = list.Take(5).ToList();
+                var listTop10 = list.Take(10).ToList();
                 string jsonText = Newtonsoft.Json.JsonConvert.SerializeObject(listTop10);
                 context.Response.ContentType = "application/json";
                 context.Response.Write(jsonText);

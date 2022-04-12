@@ -12,7 +12,7 @@ namespace ForJob.Managers
     {
         ListModel _model = new ListModel();
 
-        //找出問卷內容 ㄎㄎ
+        //列出問卷內容 ㄎㄎ
         public List<ListModel> GetAllList()
         {
             List<ListModel> list = new List<ListModel>();
@@ -61,6 +61,69 @@ namespace ForJob.Managers
                 throw;
             }
         }
+
+        public List<ListModel> GetOneList(Guid id)
+        {
+            List<ListModel> list = new List<ListModel>();
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Questionary
+                    WHERE QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@QID", id);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Number = (int)reader["QNumber"],
+                                Title = reader["QTitle"] as string,
+                                StartTime = (DateTime)reader["QStartTime"],
+                                EndTime = reader["QEndTime"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                Content = reader["QContent"] as string,
+                            };
+                            model.StartTime_string = model.StartTime.ToString("yyyy/MM/dd");
+
+                            if (string.IsNullOrEmpty(model.EndTime))
+                            {
+                                model.EndTime = "-";
+                            }
+                            list.Add(model);
+                        }
+                        return list;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
+        }
+
+        internal void DeleteList(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+
+
 
         public List<ListModel> FindList(string title, string time_start, string time_end)
         {
@@ -188,6 +251,7 @@ namespace ForJob.Managers
             }
         }
 
+        #region"分頁"
         //分頁
         public List<ListModel> Pafination(string time_start, string time_end, int pageSize, int pageIndex)
         {
@@ -197,7 +261,7 @@ namespace ForJob.Managers
                 skip = 0;
 
             string connStr = ConfigHelper.GetConnectionString();
-            string commandText =    
+            string commandText =
                 $@"SELECT TOP  {(pageSize)}  *
                     FROM Questionary 
                      WHERE    QNumber not IN 
@@ -257,8 +321,8 @@ namespace ForJob.Managers
 
         }
 
-
-        public List<ListModel> PafinationHasTitle(string title , string time_start, string time_end, int pageSize, int pageIndex)
+        //有標題的分頁
+        public List<ListModel> PafinationHasTitle(string title, string time_start, string time_end, int pageSize, int pageIndex)
         {
             List<ListModel> list = new List<ListModel>();
             int skip = pageSize * (pageIndex - 1);  // 計算跳頁數
@@ -327,6 +391,423 @@ namespace ForJob.Managers
             }
 
         }
+
+        #endregion"分頁"
+
+
+        #region "創立問卷資訊、找出問卷"
+
+        //找出是否有相同標題之問卷
+        public ListModel GetAccount(string title)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                 @" SELECT *
+                    FROM Questionary
+                    WHERE QTitle = @QTitle";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QTitle", title);
+
+                        conn.Open();
+
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Number = (int)reader["QNumber"],
+                                Title = reader["QTitle"] as string,
+                                StartTime = (DateTime)reader["QStartTime"],
+                                EndTime = reader["QEndTime"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                Content = reader["QContent"] as string,
+
+                            };
+                            return model;
+
+                        }
+
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+
+        //找出是否有相同GUID之問卷
+        public ListModel GetAccount(Guid ID)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                 @" SELECT *
+                    FROM Questionary
+                    WHERE QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QID", ID);
+
+                        conn.Open();
+
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Number = (int)reader["QNumber"],
+                                Title = reader["QTitle"] as string,
+                                StartTime = (DateTime)reader["QStartTime"],
+                                EndTime = reader["QEndTime"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                Content = reader["QContent"] as string,
+
+                            };
+                            return model;
+
+                        }
+
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+        //創建問卷
+        public bool CreateQuestionary(ListModel model)
+        {
+
+            // 2. 新增資料
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @" 
+                    INSERT INTO Questionary
+                        (QID, QTitle, QContent ,QStatus, QStartTime, QEndTime)
+                    VALUES
+                        (@QID, @QTitle , @QContent, @QStatus, @QStartTime, @QEndTime);";
+
+
+
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@QID", model.ID);
+                        command.Parameters.AddWithValue("@QTitle", model.Title);
+                        command.Parameters.AddWithValue("@QContent", model.Content);
+                        command.Parameters.AddWithValue("@QStatus", model.StatusList);
+                        command.Parameters.AddWithValue("@QStartTime", model.StartTime);
+                        command.Parameters.AddWithValue("@QEndTime", model.EndTime);
+                        //command.Parameters.AddWithValue("@QNumber", model.Number);
+
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+            }
+        }
+
+
+        //創建問題
+        public bool CreateQuestion(ListModel model)
+        {
+            model.QuestionID = Guid.NewGuid();
+            // 2. 新增資料
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @" 
+                    INSERT INTO Question
+                        (QID, QuestionID, QQuestion, QAnswer, QIsNecessary ,QQMode, QCatrgory)
+                    VALUES
+                        (@QID, @QuestionID, @QQuestion, @QAnswer, @QIsNecessary, @QQMode , @QCatrgory);";
+
+
+
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+                        command.Parameters.AddWithValue("@QID", model.ID);
+                        command.Parameters.AddWithValue("@QuestionID", model.QuestionID);
+                        command.Parameters.AddWithValue("@QQuestion", model.Question);
+                        command.Parameters.AddWithValue("@QAnswer", model.Answer);
+                        command.Parameters.AddWithValue("@QIsNecessary", model.QIsNecessary);
+                        command.Parameters.AddWithValue("@QQMode", model.QQMode);
+                        command.Parameters.AddWithValue("@QCatrgory", model.QCatrgory);
+                        //command.Parameters.AddWithValue("@QNumber", model.Number);
+
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+            }
+        }
+
+
+        //找出該ID所有問題
+
+        public List<ListModel> GetAllQuestion(Guid ID)
+        {
+            List<ListModel> list = new List<ListModel>();
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Question
+                    WHERE QID  =  @QID
+                    ORDER BY [QNumber] DESC;";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QID", ID);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Question = reader["QQuestion"] as string,
+                                QQMode = reader["QQMode"] as string,
+                                QIsNecessary = reader["QIsNecessary"] as string,
+                                Number = (int)reader["QNumber"],
+                                QuestionID = (Guid)reader["QuestionID"]
+                            };
+
+                            list.Add(model);
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw;
+            }
+        }
+
+
+        //找出問卷資訊
+
+        public ListModel GetAllQuestionInfo(Guid ID)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Question
+                    WHERE QID  =  @QID
+                    ORDER BY [QNumber] DESC;";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QID", ID);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Question = reader["QQuestion"] as string,
+                                QQMode = reader["QQMode"] as string,
+                                QIsNecessary = reader["QIsNecessary"] as string,
+                                QCatrgory = reader["QCatrgory"] as string,
+                                Number = (int)reader["QNumber"],
+                                Answer = reader["QAnswer"] as string
+                            };
+
+                            return model;
+                        }
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw;
+            }
+        }
+        public ListModel GetAllQuestionInfo(ListModel model)
+        {
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Question
+                    WHERE QID  =  @QID and
+                    QNumber = @QNumber;";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+                        command.Parameters.AddWithValue("@QID", model.ID);
+                        command.Parameters.AddWithValue("@QNumber", model.Number);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+
+                            model.ID = (Guid)reader["QID"];
+                            model.Question = reader["QQuestion"] as string;
+                            model.QQMode = reader["QQMode"] as string;
+                            model.QIsNecessary = reader["QIsNecessary"] as string;
+                            model.QCatrgory = reader["QCatrgory"] as string;
+                            model.Number = (int)reader["QNumber"];
+                            model.Answer = reader["QAnswer"] as string;
+                            return model;
+                        }
+                        return null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw;
+            }
+        }
+
+        //變更問卷資訊的方法
+
+        public bool UpdateQuestion(ListModel model)
+        {
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  UPDATE Question
+                    SET 
+                        QQuestion = @QQuestion,
+                        QAnswer = @QAnswer,
+                        QIsNecessary = @QIsNecessary,
+                        QQMode = @QQMode,
+                        QCatrgory = @QCatrgory                           
+                    WHERE
+                        QID = @id  and
+                        QNumber = @QNumber";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@id", model.ID);
+                        command.Parameters.AddWithValue("@QQuestion", model.Question);
+                        command.Parameters.AddWithValue("@QAnswer", model.Answer);
+                        command.Parameters.AddWithValue("@QIsNecessary", model.QIsNecessary);
+                        command.Parameters.AddWithValue("@QQMode", model.QQMode);
+                        command.Parameters.AddWithValue("@QCatrgory", model.QCatrgory);
+                        command.Parameters.AddWithValue("@QNumber", model.Number);
+                        conn.Open();
+
+                        command.ExecuteNonQuery();
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw;
+            }
+        }
+
+
+        //刪除問卷
+        public bool DeleteQuestion(ListModel model)
+        {
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @" Delete from question where	QuestionID = @QuestionID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+
+                        command.Parameters.AddWithValue("@QuestionID", model.QuestionID);
+
+                        conn.Open();
+
+                        command.ExecuteNonQuery();
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw;
+            }
+        }
+        #endregion
+
+
+
+
+
+
+
 
     }
 }

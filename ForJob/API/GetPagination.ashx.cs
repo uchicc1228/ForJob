@@ -14,7 +14,7 @@ namespace ForJob.API
     {
         ListManager _mgr = new ListManager();
         ListHelper _helper = new ListHelper();
-        private const int _pageSize = 5;
+        private const int _pageSize = 10;
 
         public void ProcessRequest(HttpContext context)
         {

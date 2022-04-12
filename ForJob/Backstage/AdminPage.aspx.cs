@@ -18,9 +18,19 @@ namespace ForJob.Backstage
 
         }
 
-        protected void btnsearch_Click(object sender, EventArgs e)
+        protected void btnAddList_Click(object sender, EventArgs e)
         {
-            
+            Guid ID = Guid.NewGuid();
+            Response.Redirect("AddQuestionary.aspx?ID=" + ID.ToString());
+           
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e)
+        {
+            var List =Request.Form["hfID"].ToString();
+            string[] arr = List.Split(',');
+
+
         }
     }
 }

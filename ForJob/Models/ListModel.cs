@@ -8,6 +8,7 @@ namespace ForJob.Models
     public class ListModel
     {
         public Guid ID { get; set; }
+        public Guid QuestionID { get; set; }
         public int Number { get; set; }
         public string Title { get; set; }
 
@@ -19,11 +20,18 @@ namespace ForJob.Models
 
         public string EndTime { get; set; }
 
-        
+
         public string StatusList { get; set; }
 
-    
+        public string Question { get; set; }
 
+        public string Answer { get; set; }
 
+        public string QIsNecessary { get; set; }
+
+        public string QQMode { get; set; }
+
+        public string QCatrgory { get; set; }
     }
+
 }
