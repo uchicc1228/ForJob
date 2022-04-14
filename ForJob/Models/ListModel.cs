@@ -31,6 +31,9 @@ namespace ForJob.Models
 
         public string QQMode { get; set; }
 
+
+        public string QuestionUrl { get; set; }
+        public string QuestionEditUrl { get; set; }
         public string QCatrgory { get; set; }
     }
 

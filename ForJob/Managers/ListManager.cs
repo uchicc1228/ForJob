@@ -41,6 +41,9 @@ namespace ForJob.Managers
                                 EndTime = reader["QEndTime"] as string,
                                 StatusList = reader["QStatus"] as string,
                                 Content = reader["QContent"] as string,
+                                QuestionUrl =reader["QuestionUrl"] as string,
+                                QuestionEditUrl = reader["QuestionEditUrl"] as string,
+
                             };
                             model.StartTime_string = model.StartTime.ToString("yyyy/MM/dd");
 
@@ -52,6 +55,156 @@ namespace ForJob.Managers
                             list.Add(model);
                         }
                         return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+                throw;
+            }
+        }
+
+        //列出題目內容資訊 table Question
+        public List<ListModel> GetQuestionModel(Guid id)
+        {
+            List<ListModel> list = new List<ListModel>();
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Question
+                    WHERE QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@QID", id);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                QuestionID = (Guid)reader["QuestionID"],
+                                Number = (int)reader["QNumber"],
+                                Question = reader["QQuestion"] as string,
+                                Answer = reader["QAnswer"] as string,/////////////QAnswer split !
+                                QIsNecessary = reader["QIsNecessary"] as string,
+                                QQMode = reader["QQMode"] as string,
+                                QCatrgory = reader["QCatrgory"] as string
+                            };
+                            list.Add(model);
+                            
+                        }
+
+                        
+                        return list;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+              
+                return null;
+            }
+
+
+        }
+
+        //列出問卷內容資訊 table Questionary
+        public ListModel GetQuestionaryModel(Guid id)
+        {
+           
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Questionary
+                    WHERE QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@QID", id);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                Title = reader["QTitle"] as string,
+                                Content = reader["QContent"] as string,
+                                StatusList = reader["QStatus"] as string,
+                                StartTime = (DateTime)reader["QStartTime"] ,
+                                EndTime = reader["QEndTime"] as string,
+                                Number = (int)reader["QNumber"],
+                                QuestionUrl = reader["QuestionUrl"] as string,
+                            };
+
+                            return model;
+                        }
+
+
+                        return null;
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+
+        }
+
+        public ListModel GetAllQuestionOnUsweQuestion(Guid id)
+        {
+           
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @"  SELECT *
+                    FROM Question
+                    WHERE QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+                        command.Parameters.AddWithValue("@QID", id);
+                        conn.Open();
+                        SqlDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            ListModel model = new ListModel()
+                            {
+                                ID = (Guid)reader["QID"],
+                                QuestionID = (Guid)reader["QTitle"],
+                                Number = (int)reader["QNumber"],
+                                Question = reader["QQuestion"] as string,
+                                Answer = reader["QAnswer"] as string,
+                                QIsNecessary = reader["QIsNecessary"] as string,
+                                QQMode = reader["QQMode"] as string,
+                                QCatrgory = reader["QCatrgory"] as string,
+                            };
+                            return model;
+                           
+                        }
+                        return null;
                     }
                 }
             }
@@ -93,6 +246,7 @@ namespace ForJob.Managers
                                 EndTime = reader["QEndTime"] as string,
                                 StatusList = reader["QStatus"] as string,
                                 Content = reader["QContent"] as string,
+                                QuestionUrl = reader["QuestionUrl"] as string
                             };
                             model.StartTime_string = model.StartTime.ToString("yyyy/MM/dd");
 
@@ -115,9 +269,33 @@ namespace ForJob.Managers
 
         }
 
-        internal void DeleteList(Guid id)
+        public bool DeleteQuestionary(Guid id)
         {
-            throw new NotImplementedException();
+
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @" Delete from questionary where	QID = @QID";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+                        command.Parameters.AddWithValue("@QID", id);
+
+                        conn.Open();
+
+                        command.ExecuteNonQuery();
+                    }
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+                throw;
+            }
         }
 
 
@@ -503,9 +681,9 @@ namespace ForJob.Managers
             string commandText =
                 @" 
                     INSERT INTO Questionary
-                        (QID, QTitle, QContent ,QStatus, QStartTime, QEndTime)
+                        (QID, QTitle, QContent ,QStatus, QStartTime, QEndTime, QuestionUrl,QuestionEditUrl)
                     VALUES
-                        (@QID, @QTitle , @QContent, @QStatus, @QStartTime, @QEndTime);";
+                        (@QID, @QTitle , @QContent, @QStatus, @QStartTime, @QEndTime, @QuestionUrl,@QuestionEditUrl);";
 
 
 
@@ -524,7 +702,8 @@ namespace ForJob.Managers
                         command.Parameters.AddWithValue("@QStatus", model.StatusList);
                         command.Parameters.AddWithValue("@QStartTime", model.StartTime);
                         command.Parameters.AddWithValue("@QEndTime", model.EndTime);
-                        //command.Parameters.AddWithValue("@QNumber", model.Number);
+                        command.Parameters.AddWithValue("@QuestionUrl",model.QuestionUrl);
+                        command.Parameters.AddWithValue("@QuestionEditUrl", model.QuestionEditUrl);
 
                         conn.Open();
                         command.ExecuteNonQuery();
@@ -769,7 +948,7 @@ namespace ForJob.Managers
         }
 
 
-        //刪除問卷
+        //刪除問題
         public bool DeleteQuestion(ListModel model)
         {
 

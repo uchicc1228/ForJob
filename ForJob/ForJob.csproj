@@ -72,6 +72,10 @@
   <ItemGroup>
     <Content Include="Backstage\AddQuestionary.aspx" />
     <Content Include="Backstage\AdminPage.aspx" />
+    <Content Include="Backstage\Index.aspx" />
+    <Content Include="Backstage\QuestionEditUrl.aspx" />
+    <Content Include="Backstage\UserQuestionary.aspx" />
+    <Content Include="dd.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -101,6 +105,34 @@
     </Compile>
     <Compile Include="Backstage\AdminPage.aspx.designer.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Backstage\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Backstage\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Backstage\QuestionEditUrl.aspx.cs">
+      <DependentUpon>QuestionEditUrl.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Backstage\QuestionEditUrl.aspx.designer.cs">
+      <DependentUpon>QuestionEditUrl.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Backstage\UserQuestionary.aspx.cs">
+      <DependentUpon>UserQuestionary.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Backstage\UserQuestionary.aspx.designer.cs">
+      <DependentUpon>UserQuestionary.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="dd.aspx.cs">
+      <DependentUpon>dd.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="dd.aspx.designer.cs">
+      <DependentUpon>dd.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

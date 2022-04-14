@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 
 namespace ForJob.Backstage
 {
-    public partial class AdminPage : System.Web.UI.Page
+    public partial class Index : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -22,12 +22,12 @@ namespace ForJob.Backstage
         {
             Guid ID = Guid.NewGuid();
             Response.Redirect("AddQuestionary.aspx?ID=" + ID.ToString());
-           
+
         }
 
         protected void btnDelete_Click(object sender, EventArgs e)
         {
-            var List =Request.Form["hfID"].ToString();
+            var List = Request.Form["hfID"].ToString();
             string[] arr = List.Split(',');
 
 

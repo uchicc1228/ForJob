@@ -1,44 +1,17 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddQuestionary.aspx.cs" Inherits="ForJob.Backstage.AddQuestionary" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="QuestionEditUrl.aspx.cs" Inherits="ForJob.Backstage.QuestionEditUrl" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>後台管理-新增問卷</title>
-    <script src="../JavaScript/bootstrap/bootstrap.js"></script>
-    <script src="../JavaScript/jquery/jquery.js"></script>
-    <style>
-        div {
-            border: 0px solid black;
-        }
-    </style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title></title>
 </head>
 <body>
     <form id="form1" runat="server">
-        <h1>後台1-問卷新增管理</h1>
-         <div class="divmenu">
+              <div class="divmenu">
                 <a href="AdminPage.aspx" style="color:rgb(27, 27, 83)"><h2>後台首頁</h2></a>
             </div>
-        <asp:PlaceHolder runat="server" ID="plc1" Visible="false">
-            <label>問卷名稱</label>
-            <asp:TextBox runat="server" placeholder="輸入問卷名稱" ID="txtName"></asp:TextBox>
-            </br>
-            <label>描述內容</label>
-            <asp:TextBox runat="server" placeholder="輸入描述內容" ID="txtExplain"></asp:TextBox>
-            </br>
-            <label>開始時間</label>
-            <input type="date" runat="server" id="txtTime_start" />
-            </br>
-            <label>結束時間</label>
-            <input type="date" runat="server" id="txtTime_end" />
-            </br>
-             <label>啟用</label>
-            <asp:CheckBox runat="server" ID="checkcheck" />
-            <asp:Button runat="server" ID="btnConfirm" Text="送出DeSu" OnClick="btnConfirm_Click" />
-        </asp:PlaceHolder>
-
-
         <asp:PlaceHolder runat="server" ID="plc2">
             <div>
                 <label>問卷名稱</label>
@@ -113,6 +86,5 @@
         <asp:Button runat="server" ID="btnDelete" Text="刪除" OnClick="btnDelete_Click" />
         <asp:Button runat="server" ID="btnSend" Text="送出" OnClick="btnSend_Click" />
     </form>
-
 </body>
 </html>

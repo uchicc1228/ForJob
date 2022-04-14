@@ -1,17 +1,16 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AdminPage.aspx.cs" Inherits="ForJob.Backstage.AdminPage" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Index.aspx.cs" Inherits="ForJob.Backstage.Index" %>
 
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>後台問卷管理頁面</title>
+    <title>問卷首頁</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
         integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
         crossorigin="“anonymous" />
     <script src="../JavaScript/bootstrap/bootstrap.js"></script>
     <script src="../JavaScript/jquery/jquery.js"></script>
-
     <style>
         div {
             border: 1px solid black;
@@ -57,10 +56,9 @@
         }
 
         .pagination {
-            position: relative;     
-            left:50%;
-            padding-left:400px;
-
+            position: relative;
+            left: 50%;
+            padding-left: 400px;
         }
 
         .divleft {
@@ -73,16 +71,15 @@
             text-align: center;
             float: left;
         }
-        .divtitle{
-             
+
+        .divtitle {
         }
-        .divmenu{
-            
-            position:relative;
-            left:0%;
+
+        .divmenu {
+            position: relative;
+            left: 0%;
         }
     </style>
-
 </head>
 <body>
     <form id="form1" runat="server">
@@ -107,13 +104,7 @@
                 <literal id="ltl1"></literal>
 
             </div>
-            <div class="divleft">
-                <asp:Button runat="server" ID="btnAddList" OnClick="btnAddList_Click" Text="新增問卷" />
-
-                <button id="btn1">刪除問卷</button>
-
-            </div>
-
+            
             <div class="divlist">
                 <div class="list-group" id="summarizing">
                 </div>
@@ -151,13 +142,13 @@
                                 <table class="table table-dark table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"></th>
+                               
                                 <th scope="col">#</th>
                                 <th scope="col">問卷</th>
                                 <th scope="col">狀態</th>
                                 <th scope="col">開啟時間</th>
                                 <th scope="col">結束時間</th>
-                                <th scope="col">觀看統計</th>
+                              
                             </tr>
                         </thead>`;
                         for (var item of objDataList) {
@@ -165,13 +156,13 @@
                                 `  
                         <tbody>
                             <tr>
-                                <td><input type="checkbox"  name="checkboxQQ" value="${item.ID}" /></td>
+                             
                                 <td>${item.Number}</td>
-                                <td> <a href="${item.QuestionEditUrl}"> ${item.Title} </a> </td>
+                                <td> <a href="${item.QuestionUrl}"> ${item.Title} </a> </td>
                                 <td> ${item.StatusList} </td>
                                 <td> ${item.StartTime_string} </td>
                                 <td> ${item.EndTime} </td>
-                                <td><a href="https://www.google.com/?hl=zh_tw">google</a></td>
+                            
                                 <td><input type="hidden" class="hfID" name="hfID" value="${item.ID}"></td>
                                   
                             </tr>
@@ -190,56 +181,7 @@
             }
             BuildTable();
 
-            //刪除
-            var checkfunction = (function () {
-                $('input[name=checkboxQQ]').on('change', function () {
-                    
-                    var vals = $('input[name=hoge]:checked').map(function () {
-                        return $(this).val();
-                    }).get();
-                    console.log(vals);
-                });
-            })
-
-            $("#btn1").click(function () {
-                var vals = $('input[name=checkboxQQ]:checked').map(function () {
-                    return $(this).val();
-                }).get();
-                
-               
-                $.ajax({
-                    url: "/API/DeleteList.ashx?Action=Delete",
-                    method: "POST",
-                    data: { "ID": vals },
-                    success: function (txtMsg) {
-                        console.log(txtMsg);
-                        if (txtMsg == "OK") {
-                            BuildTable();
-                            alert("刪除成功");
-                            return;
-                        }
-                        if (txtMsg == "NULL") {
-                            alert("刪除失敗，請聯絡管理員。");
-                        }
-                        else {
-                            alert("請選擇問卷");
-                            return;
-                        }
-
-                    },
-                    error: function (msg) {
-                        console.log(msg);
-                        alert("通訊失敗，請聯絡管理員。");
-                    }
-                });
-
-            });
-            BuildTable();
-            //呼叫方法
-
-            /* $('input[name=checkboxQQ]').change(checkfunction);*/
-
-
+  
             //搜尋(標題&日期)
             $("#btnsearch").click(function () {
                 var title = $("input[placeholder='請輸入問卷標題'").val().trim();
@@ -276,13 +218,13 @@
                                 <table class="table table-dark table-striped">
                         <thead>
                             <tr>
-                                <th scope="col"></th>
+                               
                                 <th scope="col">#</th>
                                 <th scope="col">問卷</th>
                                 <th scope="col">狀態</th>
                                 <th scope="col">開啟時間</th>
                                 <th scope="col">結束時間</th>
-                                <th scope="col">觀看統計</th>
+                               
                             </tr>
                         </thead>`;
                         for (var item of objDataList) {
@@ -290,13 +232,13 @@
                                 `  
                         <tbody>
                             <tr>
-                                <td><input type="checkbox" name="checkboxQQ"  value="${item.ID}" /></td>
+                              
                                 <td>${item.Number}</td>
                                 <td> <a href="${item.QuestionUrl}">${item.Title}</a> </td>
                                 <td> ${item.StatusList} </td>
                                 <td> ${item.StartTime_string} </td>
                                 <td> ${item.EndTime} </td>
-                                <td><a href="https://www.google.com/?hl=zh_tw">google</a></td>
+                               
                                 <td><input type="hidden" class="hfID" name="hfID" value="${item.ID}"></td>
                                   
                             </tr>

@@ -1,6 +1,7 @@
 ﻿using ForJob.Managers;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
 
@@ -16,28 +17,70 @@ namespace ForJob.API
         {
 
             ListManager _mgr = new ListManager();
+            NameValueCollection IDcol = new NameValueCollection();
 
             if (string.Compare("POST", context.Request.HttpMethod) == 0 &&
                 string.Compare("DELETE", context.Request.QueryString["Action"], true) == 0)
-
             {
-                Guid id = Guid.Parse(context.Request.Form["ID"]);
-
-                // 加入 NULL 檢查
-                var dbModel = _mgr.GetOneList(id);
-
-                if (dbModel == null)
+                List<string> list = new List<string>();
+                //Load Form variables into NameValueCollection variable.
+                IDcol = context.Request.Form;
+                string ID = IDcol.ToString().Trim();  
+                if (ID.Contains("&"))
                 {
-                    context.Response.ContentType = "text/plain";
-                    context.Response.Write("NULL");
+                    int i = 0;
+                    foreach(string IDstr in ID.Split('&'))
+                    {
+                        string qq = IDstr.ToString();
+                        string newqq =qq.Remove(0,9);
+                        if(_mgr.GetOneList(Guid.Parse(newqq)) == null)
+                        {
+                            context.Response.ContentType = "text/plain";
+                            context.Response.Write("NULL");
+                            break;
+                        }
+                        else
+                        {
+                            if(_mgr.DeleteQuestionary(Guid.Parse(newqq)) == true)
+                            {
+                                context.Response.ContentType = "text/plain";
+                                context.Response.Write("OK");
+
+                            }              
+
+                        }
+
+                                           
+                    }
+
+                    return;
                 }
                 else
                 {
-                    _mgr.DeleteList(id);
-                    context.Response.ContentType = "text/plain";
-                    context.Response.Write("OK");
+                    if (string.IsNullOrEmpty(ID) != true)
+                    {
+                        string qq = ID.Remove(0, 9);
+                        if (_mgr.GetOneList(Guid.Parse(qq)) == null)
+                        {
+                            context.Response.ContentType = "text/plain";
+                            context.Response.Write("NULL");
+                            return;
+                        }
+                        else
+                        {
+                            if (_mgr.DeleteQuestionary(Guid.Parse(qq)) == true)
+                            {
+                                context.Response.ContentType = "text/plain";
+                                context.Response.Write("OK");
+                                return;
+                            }
+
+                        }
+                    }
+                 
                 }
-                return;
+
+              
             }
         }
 

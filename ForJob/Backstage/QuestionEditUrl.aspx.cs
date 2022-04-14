@@ -9,84 +9,24 @@ using System.Web.UI.WebControls;
 
 namespace ForJob.Backstage
 {
-    public partial class AddQuestionary : System.Web.UI.Page
+    public partial class QuestionEditUrl : System.Web.UI.Page
     {
-        int i;
-        ListManager _mgr = new ListManager();
+        List<ListModel> list = new List<ListModel>();
         ListModel model = new ListModel();
+        ListModel QuestionaryModel = new ListModel();
+        ListManager _mgr = new ListManager();
         protected void Page_Load(object sender, EventArgs e)
         {
+            string ID = Request.QueryString["ID"];
+            List<ListModel> list = _mgr.GetAllQuestion(Guid.Parse(ID));
+            this.ret1.DataSource = list;
+            this.ret1.DataBind();
 
-            if (!IsPostBack)
-            {
-                this.plc1.Visible = true;
-                this.plc2.Visible = false;
-
-                string today = DateTime.Now.ToString("yyyy-MM-dd");
-                this.txtTime_start.Value = today;
-                this.checkcheck.Checked = true;
-                this.btnconfirmQ.Visible = true;
-                this.btnchanged.Visible = false;
-
-            }
-
-        }
-
-        protected void btnConfirm_Click(object sender, EventArgs e)
-        {
-
-            //問卷資訊
-            model.ID = Guid.Parse(Request.QueryString["ID"]);
-            model.StartTime = Convert.ToDateTime(this.txtTime_start.Value);
-            model.EndTime = this.txtTime_end.Value;
-            model.Title = this.txtName.Text;
-            model.Content = this.txtExplain.Text;
-            model.QuestionUrl = "UserQuestionary.aspx?ID=" + model.ID;
-            model.QuestionEditUrl = "QuestionEditUrl.aspx?ID=" + model.ID;
-            if (this.checkcheck.Checked == false)
-            {
-                model.StatusList = "開啟";
-            }
-            else
-            {
-                model.StatusList = "關閉";
-            }
-
-            if (string.IsNullOrEmpty(model.EndTime) == false)
-            {
-                if (model.StartTime > Convert.ToDateTime(model.EndTime))
-                {
-                    Response.Write("<script>alert('開始日期不可大於結束日期！')</script>");
-                    return;
-                }
-            }
-
-            if (_mgr.GetAccount(model.Title) != null)
-            {
-                Response.Write("<script>alert('存在相同標題問卷！')</script>");
-                return;
-            }
-
-            else
-            {
-                if (_mgr.CreateQuestionary(model) == false)
-                {
-                    Response.Write("<script>alert('問卷創建失敗！')</script>");
-                }
-                else
-                {
-                    Response.Write("<script>alert('創立成功！')</script>");
-                    this.plc1.Visible = false;
-                    this.plc2.Visible = true;
-                    ListModel model2 = _mgr.GetAccount(model.Title);
-                    this.lblName.Text = model2.Title;
-                    this.lblContent.Text = model2.Content;
-                    this.lblStartTime.Text = model2.StartTime.ToString("yyyy/MM/dd");
-                    this.lblEndTime.Text = model2.EndTime;
-                    this.Session["Question"] = "123";
-                    this.Session["Number"] = 123;
-                }
-            }
+            model = _mgr.GetQuestionaryModel(Guid.Parse(ID));
+            this.lblName.Text = model.Title;
+            this.lblContent.Text = model.Content;
+            this.lblStartTime.Text =  model.StartTime.ToString("yyyy/MM/dd");
+            this.lblEndTime.Text = model.EndTime;
 
 
         }
@@ -104,7 +44,7 @@ namespace ForJob.Backstage
                 ListModel model2 = _mgr.GetAccount(model.ID);
                 model2.QCatrgory = "自訂";
 
-                if(string.IsNullOrEmpty(this.txtQuestion.Text) != true)
+                if (string.IsNullOrEmpty(this.txtQuestion.Text) != true)
                 {
                     model2.Question = this.txtQuestion.Text;
                 }
@@ -113,12 +53,6 @@ namespace ForJob.Backstage
                     Response.Write("<script>alert('尚未輸入題目')</script>");
                     return;
                 }
-                    
-                    
-
-           
-
-
 
                 if (this.checknecessary.Checked)
                 {
@@ -147,13 +81,13 @@ namespace ForJob.Backstage
 
                 }
 
-                if (string.IsNullOrEmpty(this.txtanswer.Text) != true & model2.QQMode !="文字")
+                if (string.IsNullOrEmpty(this.txtanswer.Text) != true & model2.QQMode != "文字")
                 {
-                    model2.Answer = this.txtanswer.Text; 
+                    model2.Answer = this.txtanswer.Text;
                 }
-                else if(model2.QQMode == "文字")
+                else if (model2.QQMode == "文字")
                 {
-                    model2.Answer = this.txtanswer.Text; 
+                    model2.Answer = this.txtanswer.Text;
                 }
 
                 else
@@ -168,7 +102,7 @@ namespace ForJob.Backstage
 
 
                     Response.Write("<script>alert('問題新增成功！')</script>");
-                    
+
                     List<ListModel> list = _mgr.GetAllQuestion(model2.ID);
                     this.ret1.DataSource = list;
                     this.ret1.DataBind();
@@ -301,7 +235,7 @@ namespace ForJob.Backstage
 
         protected void btnSend_Click(object sender, EventArgs e)
         {
-            if(this.Session["Question"].ToString() == "123")
+            if (this.Session["Question"].ToString() == "123")
             {
                 Response.Write("<Script>alert('這顆按鈕是編輯資料時使用,如要新增問題請按加入')</Script>");
                 return;
@@ -313,15 +247,15 @@ namespace ForJob.Backstage
             }
 
             model.ID = Guid.Parse(Request.QueryString["ID"]);
-                model.Question = this.Session["Question"] as string;
-                model.Answer = this.Session["Answer"] as string;
-                model.QCatrgory = this.Session["Catrgory"] as string;
-                model.QIsNecessary = this.Session["IsNecessary"] as string;
-                model.QQMode = this.Session["Mode"] as string;
-                model.ID = Guid.Parse(Request.QueryString["ID"]);
-                model.Number = (int)this.Session["Number"];
-            
-                
+            model.Question = this.Session["Question"] as string;
+            model.Answer = this.Session["Answer"] as string;
+            model.QCatrgory = this.Session["Catrgory"] as string;
+            model.QIsNecessary = this.Session["IsNecessary"] as string;
+            model.QQMode = this.Session["Mode"] as string;
+            model.ID = Guid.Parse(Request.QueryString["ID"]);
+            model.Number = (int)this.Session["Number"];
+
+
 
             if (Session["Question"] as string != null)
             {
@@ -381,10 +315,10 @@ namespace ForJob.Backstage
                     if (model2.QQMode == "文字")
                         this.dowMode.SelectedIndex = 2;
                     if (model.QIsNecessary == "必填")
-                        this.checkcheck.Checked = true;
+                        this.checknecessary.Checked = true;
 
                     else
-                        this.checkcheck.Checked = false;
+                        this.checknecessary.Checked = false;
 
                     this.btnconfirmQ.Visible = false;
                     this.btnchanged.Visible = true;
@@ -433,5 +367,7 @@ namespace ForJob.Backstage
 
 
         }
+
+
     }
 }
