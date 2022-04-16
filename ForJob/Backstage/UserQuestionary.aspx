@@ -32,11 +32,11 @@
             <%--姓名--%>
             <asp:Label runat="server" ID="lalName">姓名</asp:Label> <asp:TextBox  runat="server" ID="txtName" placeholder="輸入姓名"></asp:TextBox> <br/>
              <%--手機--%>
-            <asp:Label runat="server" ID="Label1">手機</asp:Label> <asp:TextBox  runat="server" ID="TextBox1" placeholder="輸入手機"></asp:TextBox> <br/>
+            <asp:Label runat="server" ID="Label1">手機</asp:Label> <asp:TextBox  runat="server" ID="txtPhone" placeholder="輸入手機"></asp:TextBox> <br/>
              <%--Email--%>
-            <asp:Label runat="server" ID="Label2">信箱</asp:Label> <asp:TextBox  runat="server" ID="TextBox2" placeholder="輸入email"></asp:TextBox> <br/>
+            <asp:Label runat="server" ID="Label2">信箱</asp:Label> <asp:TextBox  runat="server" ID="txtEmail" placeholder="輸入email"></asp:TextBox> <br/>
              <%--年齡--%>
-            <asp:Label runat="server" ID="Label3">年齡</asp:Label> <asp:TextBox  runat="server" ID="TextBox3" placeholder="輸入年齡"></asp:TextBox> <br/>
+            <asp:Label runat="server" ID="Label3">年齡</asp:Label> <asp:TextBox  runat="server" ID="txtAge" placeholder="輸入年齡"></asp:TextBox> <br/>
         </div>
         <div>
             <asp:Button runat="server" ID="btnyes" Text="確定送出" OnClick="btnyes_Click" />

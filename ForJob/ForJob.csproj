@@ -77,6 +77,7 @@
     <Content Include="Backstage\UserQuestionary.aspx" />
     <Content Include="dd.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="IfoConfirmPage.aspx" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -139,7 +140,15 @@
     </Compile>
     <Compile Include="Helpers\ConfigHelper.cs" />
     <Compile Include="Helpers\ListHelper.cs" />
+    <Compile Include="IfoConfirmPage.aspx.cs">
+      <DependentUpon>IfoConfirmPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="IfoConfirmPage.aspx.designer.cs">
+      <DependentUpon>IfoConfirmPage.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Managers\ListManager.cs" />
+    <Compile Include="Models\AccInfoModel.cs" />
     <Compile Include="Models\ListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
