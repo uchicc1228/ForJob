@@ -20,8 +20,8 @@ namespace ForJob.Models
         public string[] TextQuestion { get; set; }
 
 
+        public List<string> CheckAnswer { get; set; }
         public string[] CheckAnswer { get; set; }
-        
         public string[] RadioAnswer { get; set; }
 
         public string[] TextAnswer { get; set; }

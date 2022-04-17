@@ -194,7 +194,8 @@ namespace ForJob.Backstage
                     if (Findtxt.Checked)
 
                     {
-                        this.info.CheckAnswer[x] = Findtxt.Text;
+                        this.info.CheckAnswer.Add(Findtxt.Text);
+                        //this.info.CheckAnswer[x] = Findtxt.Text;
                     }
                 }
             }
@@ -203,7 +204,8 @@ namespace ForJob.Backstage
 
                 CheckBox Findtxt = (CheckBox)this.FindControl("chk0");
                 if (Findtxt.Checked) { 
-                    this.info.CheckAnswer[0] = Findtxt.Text;
+                    //this.info.CheckAnswer[0] = Findtxt.Text;
+                    this.info.CheckAnswer.Add(Findtxt.Text);
                 }
             }
 
