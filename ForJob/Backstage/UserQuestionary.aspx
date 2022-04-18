@@ -39,6 +39,9 @@
             <asp:Label runat="server" ID="Label3">年齡</asp:Label> <asp:TextBox  runat="server" ID="txtAge" placeholder="輸入年齡"></asp:TextBox> <br/>
         </div>
         <div>
+            <asp:Panel runat="server" ID="panel"></asp:Panel>
+        </div>
+        <div>
             <asp:Button runat="server" ID="btnyes" Text="確定送出" OnClick="btnyes_Click" />
             <asp:Button runat="server" ID="btnback" Text="取消返回"  OnClick="btnback_Click"/>
         </div>

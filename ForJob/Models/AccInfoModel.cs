@@ -15,16 +15,19 @@ namespace ForJob.Models
         public string UserEmail { get; set; }
         public string UsweAge { get; set; }
 
-        public string[] CheckQuestion { get; set; }
-        public string[] RadioQuestion { get; set; }
-        public string[] TextQuestion { get; set; }
-
+        public List<string> CheckQuestion { get; set; }
+        public List<string> RadioQuestion { get; set; }
+        public List<string> TextQuestion { get; set; }
 
         public List<string> CheckAnswer { get; set; }
-        public string[] CheckAnswer { get; set; }
-        public string[] RadioAnswer { get; set; }
 
-        public string[] TextAnswer { get; set; }
+        public List<string> RadioAnswer { get; set; }
+        public List<string> TextAnswer { get; set; }
+
+        public string QuestionTitle { get; set; }
+        public string QuestionContent { get; set; }
+
+
 
     }
 }

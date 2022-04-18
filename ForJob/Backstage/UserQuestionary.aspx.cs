@@ -14,10 +14,12 @@ namespace ForJob.Backstage
     public partial class UserQuestionary : System.Web.UI.Page
     {
         AccInfoModel info = new AccInfoModel();
-        List<ListModel> list = new List<ListModel>();
-        ListModel QuestionModel = new ListModel();
+        List<ListModel> list = new List<ListModel>(); 
         ListModel QuestionaryModel = new ListModel();
         ListManager _mgr = new ListManager();
+        List<string> QQTEXT = new List<string>();
+        List<string> QQRadio = new List<string>();
+        List<string> QQCheck = new List<string>();
         int a;
         int b;
         int c;
@@ -53,28 +55,34 @@ namespace ForJob.Backstage
             int i = 0;
             int k = 0;
             int j = 0;
-
+            int RN = 0;
             foreach (var item in list)
             {
                 if (item.QQMode == "單選")
                 {
                     if (item.Answer.Contains(","))
                     {
+                        
                         this.form1.Controls.Add(new Literal() { ID = "rdoltl" + i, Text = "<br/>" + item.Question + ":" });
-                        this.info.RadioQuestion[i] = item.Question;
+                        QQRadio.Add(item.Question);
+                        info.RadioQuestion = QQRadio;
                         string[] array = item.Answer.Split(',');
                         foreach (var item2 in array)
                         {
-
-                            this.form1.Controls.Add(new RadioButton() { ID = "rdo" + i, Text = item2 });
-
-                            i++;
-                            a++;
+                           
+                            this.form1.Controls.Add(new RadioButton() { ID = "rdo" + i, Text = item2 ,GroupName = "group" + RN });
+                           
+                             i++;
+                             a++;
                         }
+                        RN++;
                         continue;
                     }
                     else
                     {
+                      
+                        QQRadio.Add(item.Question);
+                        info.RadioQuestion = QQRadio;
                         BuildRadioBox(i, item.Answer, item.Question);
                         a++;
                         i++;
@@ -86,25 +94,28 @@ namespace ForJob.Backstage
                 {
                     if (item.Answer.Contains(","))
                     {
+                       
                         this.form1.Controls.Add(new Literal() { ID = "checkltl" + j, Text = "<br/>" + item.Question + ":" });
-                        this.info.CheckQuestion[j] = item.Question;
+                        
                         string[] array = item.Answer.Split(',');
-
+                        QQCheck.Add(item.Question);
+                        info.CheckQuestion = QQCheck;
                         foreach (var item2 in array)
                         {
+                           
 
                             this.form1.Controls.Add(new CheckBox() { ID = "chk" + j, Text = item2 });
                             b++;
                             j++;
                         }
-
-
-
-
+                       
                         continue;
                     }
                     else
                     {
+                     
+                        QQCheck.Add(item.Question);
+                        info.CheckQuestion = QQCheck;
                         BuildCheckBox(j, item.Answer, item.Question);
                         b++;
                         j++;
@@ -113,9 +124,11 @@ namespace ForJob.Backstage
                 }
                 if (item.QQMode == "文字")
                 {
+                   
+                    QQTEXT.Add(item.Question);
+                    info.TextQuestion= QQTEXT;
 
-                    this.info.TextQuestion[k] = item.Question;
-                    BuildTextBox(k, item.Answer, item.Question);
+                    BuildTextBox(k, item.Question);
                     k++;
                     c++;
 
@@ -125,7 +138,7 @@ namespace ForJob.Backstage
 
         }
 
-        private void BuildTextBox(int i, string Answer, string Question)
+        private void BuildTextBox(int i, string Question)
         {
 
             this.form1.Controls.Add(new Literal() { ID = "textltl" + i, Text = "<br/>" + Question + ":" });
@@ -143,8 +156,8 @@ namespace ForJob.Backstage
         private void BuildRadioBox(int k, string Answer, string Question)
         {
 
-            this.form1.Controls.Add(new Literal() { ID = "rdoltl" + k, Text = "<br/>" + Question + ":" + "<br/>" });
-            this.form1.Controls.Add(new RadioButton() { ID = "rdo" + k, Text = Answer });
+            //this.form1.Controls.Add(new Literal() { ID = "rdoltl" + k, Text = "<br/>" + Question + ":" + "<br/>" });
+            this.form1.Controls.Add(new RadioButton() { ID = "rdo" + k, Text = Answer ,GroupName=$"group{k}"});
 
 
         }
@@ -168,71 +181,104 @@ namespace ForJob.Backstage
 
         protected void btnyes_Click(object sender, EventArgs e)
         {
-            //將TEXTBOX內容寫入Session
+            //將TEXTBOX內容寫入
             if (this.FindControl("txt1") != null)
             {
+                List<string> QQ = new List<string>();
                 for (int x = 0; x < c; x++)
                 {
                     TextBox Findtxt = (TextBox)this.FindControl($"txt{x}");
-                    info.TextAnswer[x] = Findtxt.Text;
+                    QQ.Add(Findtxt.Text);
+                    this.info.TextAnswer = QQ;
+                    //info.TextAnswer[x] = Findtxt.Text;
                 }
             }
             else if (this.FindControl("txt0") != null)
             {
                 TextBox Findtxt = (TextBox)this.FindControl("txt0");
-                info.TextAnswer[0] = Findtxt.Text;
+                List<string> QQ = new List<string>();
+                QQ.Add(Findtxt.Text);
+                this.info.TextAnswer = QQ;
+                //info.TextAnswer[0] = Findtxt.Text;
             }
 
 
 
-            //將checkbox內容寫入Session
+            //將checkbox內容寫入
             if (this.FindControl("chk1") != null)
             {
+                List<string> QQ = new List<string>();
                 for (int x = 0; x < b; x++)
                 {
                     CheckBox Findtxt = (CheckBox)this.FindControl($"chk{x}");
                     if (Findtxt.Checked)
-
                     {
-                        this.info.CheckAnswer.Add(Findtxt.Text);
-                        //this.info.CheckAnswer[x] = Findtxt.Text;
+
+                        QQ.Add(Findtxt.Text);
+                        this.info.CheckAnswer = QQ;
+
+                    }
+                    else
+                    {
+                        QQ.Add("未選擇");
+                        this.info.CheckAnswer = QQ;
                     }
                 }
             }
             else if (this.FindControl("chk0") != null)
             {
-
+                List<string> QQ = new List<string>();
                 CheckBox Findtxt = (CheckBox)this.FindControl("chk0");
-                if (Findtxt.Checked) { 
-                    //this.info.CheckAnswer[0] = Findtxt.Text;
-                    this.info.CheckAnswer.Add(Findtxt.Text);
+                if (Findtxt.Checked)
+                {
+
+                    QQ.Add(Findtxt.Text);
+                    this.info.CheckAnswer = QQ;
+
+                }
+                else
+                {
+                    QQ.Add("未選擇");
+                    this.info.CheckAnswer = QQ;
                 }
             }
 
 
 
-            //將radio內容寫入Session
+            //將radio內容寫入
             if (this.FindControl("rdo1") != null)
             {
+                List<string> QQ = new List<string>();
                 for (int x = 0; x < c; x++)
                 {
                     RadioButton Findtxt = (RadioButton)this.FindControl($"rdo{x}");
                     if (Findtxt.Checked)
                     {
-                        this.Session[$"rdo{x}"] = Findtxt.Text;
-                       
+                        QQ.Add(Findtxt.Text);
+                        this.info.RadioAnswer = QQ;
+
+
+                    }
+                    else
+                    {
+                        QQ.Add("未選擇");
+                        this.info.CheckAnswer = QQ;
                     }
                 }
             }
             else if (this.FindControl("rdo0") != null)
             {
                 RadioButton Findtxt = (RadioButton)this.FindControl("rdo0");
+                List<string> QQ = new List<string>();
                 if (Findtxt.Checked)
                 {
-
-
-                    this.info.RadioAnswer[0] = Findtxt.Text;
-                   
+                    QQ.Add(Findtxt.Text);
+                    this.info.RadioAnswer = QQ;
+                }
+                else
+                {
+                    QQ.Add("未選擇");
+                    this.info.CheckAnswer = QQ;
                 }
             }
             //將會員資料寫入 新Session
@@ -246,6 +292,18 @@ namespace ForJob.Backstage
             this.Session["ALLRdoQuestion"] = this.info.RadioQuestion;
             this.Session["ALLChkQuestion"] = this.info.CheckQuestion;
             this.Session["ALLTxtQuestion"] = this.info.TextQuestion;
+            //for(int i = 0; i <info.RadioQuestion.Count; i++)
+            //{
+            //    if(info.RadioAnswer == null)
+            //    {
+            //        info.RadioAnswer.Add("未選擇");
+            //    }
+            //    if (info.RadioAnswer.Count  != info.RadioQuestion.Count)
+            //    {
+            //        info.RadioAnswer.Add("未選擇");
+            //    }
+            //}
+          
             this.Session["ALLRdoAnswer"] = this.info.RadioAnswer;
             this.Session["ALLChkAnswer"] = this.info.CheckAnswer;
             this.Session["ALLTxtAnswer"] = this.info.TextAnswer;

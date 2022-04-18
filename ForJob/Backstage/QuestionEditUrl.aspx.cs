@@ -17,12 +17,14 @@ namespace ForJob.Backstage
         ListManager _mgr = new ListManager();
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (!IsPostBack) { 
             string ID = Request.QueryString["ID"];
             List<ListModel> list = _mgr.GetAllQuestion(Guid.Parse(ID));
             this.ret1.DataSource = list;
             this.ret1.DataBind();
-
-            model = _mgr.GetQuestionaryModel(Guid.Parse(ID));
+            }
+            string ID1 = Request.QueryString["ID"];
+            model = _mgr.GetQuestionaryModel(Guid.Parse(ID1));
             this.lblName.Text = model.Title;
             this.lblContent.Text = model.Content;
             this.lblStartTime.Text =  model.StartTime.ToString("yyyy/MM/dd");

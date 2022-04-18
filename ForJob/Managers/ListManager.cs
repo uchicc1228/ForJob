@@ -1029,8 +1029,54 @@ namespace ForJob.Managers
         #endregion
 
 
+        //寫入問卷資訊
+
+        public bool CreateQuestionaryInfo(ListModel model)
+        {
+
+            // 2. 新增資料
+            string connStr = ConfigHelper.GetConnectionString();
+            string commandText =
+                @" 
+                    INSERT INTO Questionary
+                        (QID, QTitle, QContent ,QStatus, QStartTime, QEndTime, QuestionUrl,QuestionEditUrl)
+                    VALUES
+                        (@QID, @QTitle , @QContent, @QStatus, @QStartTime, @QEndTime, @QuestionUrl,@QuestionEditUrl);";
 
 
+
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connStr))
+                {
+                    using (SqlCommand command = new SqlCommand(commandText, conn))
+                    {
+
+
+                        command.Parameters.AddWithValue("@QID", model.ID);
+                        command.Parameters.AddWithValue("@QTitle", model.Title);
+                        command.Parameters.AddWithValue("@QContent", model.Content);
+                        command.Parameters.AddWithValue("@QStatus", model.StatusList);
+                        command.Parameters.AddWithValue("@QStartTime", model.StartTime);
+                        command.Parameters.AddWithValue("@QEndTime", model.EndTime);
+                        command.Parameters.AddWithValue("@QuestionUrl", model.QuestionUrl);
+                        command.Parameters.AddWithValue("@QuestionEditUrl", model.QuestionEditUrl);
+
+                        conn.Open();
+                        command.ExecuteNonQuery();
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+
+
+                return false;
+            }
+        }
 
 
 
